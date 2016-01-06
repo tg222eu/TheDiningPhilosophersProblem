@@ -16,16 +16,16 @@ public class Program {
 
                 ChopStick[] chopSticks = new ChopStick[numberOfPhilosophers];
                 for (int i = 0; i < numberOfPhilosophers; i++) {
-                    chopSticks[i] = new ChopStick(i);
+                    //chopSticks[i] = new ChopStick(i);
                 }
 
                 executorService = Executors.newFixedThreadPool(numberOfPhilosophers);
 
                 for (int i = 0; i < numberOfPhilosophers; i++) {
                     if(i+1 != numberOfPhilosophers) {
-                        philosophers[i] = new Philosopher(i, chopSticks[i], chopSticks[i + 1]);
+                        //philosophers[i] = new Philosopher(i, chopSticks[i], chopSticks[i + 1]);
                     }else{
-                        philosophers[i] = new Philosopher(i, chopSticks[i], chopSticks[0]);
+                        //philosophers[i] = new Philosopher(i, chopSticks[i], chopSticks[0]);
                     }
                 }
                 for(int i=0; i<numberOfPhilosophers; i++){

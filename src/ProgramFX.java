@@ -16,7 +16,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ProgramFX extends Application {
+
+    ArrayList<ChopStick> listOfChop = new ArrayList<ChopStick>();
+    ChopStick[] chopArr = new ChopStick[5];
+    Philosopher[] philArr = new Philosopher[5];
+    public ExecutorService executorService = null;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,45 +37,38 @@ public class ProgramFX extends Application {
         int circlePositionX = 300;
         int circlePositionY = 300;
         int circleRadius = 120;
+        Pane canvas = new Pane();
 
         Circle circleTable = new Circle();
         circleTable.setCenterX(circlePositionX);
         circleTable.setCenterY(circlePositionY);
         circleTable.setRadius(circleRadius);
 
-        Circle circleChopStick0 = createChopStick(circlePositionX, circlePositionY, circleRadius-30, 0);
-        Circle circleChopStick1 = createChopStick(circlePositionX, circlePositionY, circleRadius-30, 72);
-        Circle circleChopStick2 = createChopStick(circlePositionX, circlePositionY, circleRadius-30, 144);
-        Circle circleChopStick3 = createChopStick(circlePositionX, circlePositionY, circleRadius-30, 216);
-        Circle circleChopStick4 = createChopStick(circlePositionX, circlePositionY, circleRadius-30, 288);
+        canvas.getChildren().addAll(circleTable);
 
-        Circle seat0 = createSeat(circlePositionX, circlePositionY, circleRadius + 30, 0 + 36);
-        Circle seat1 = createSeat(circlePositionX, circlePositionY, circleRadius + 30, 72 + 36);
-        Circle seat2 = createSeat(circlePositionX, circlePositionY, circleRadius + 30, 144 + 36);
-        Circle seat3 = createSeat(circlePositionX, circlePositionY, circleRadius + 30, 216 + 36);
-        Circle seat4 = createSeat(circlePositionX, circlePositionY, circleRadius+30, 288+36);
+        for(int i=0; i<5; i++){
+            chopArr[i] = new ChopStick(i, circlePositionX, circlePositionY, circleRadius, i*72);
+            System.out.println(chopArr[i].getX() + " " + chopArr[i].getY());
+            canvas.getChildren().add(chopArr[i].getCircle());
+        }
+
+        executorService = Executors.newFixedThreadPool(5);
+
+        for(int i=0; i<5; i++){
+            philArr[i] = new Philosopher(i, chopArr[i], chopArr[(i+1)%5], circlePositionX, circlePositionY,
+                    circleRadius, i*72+36);
+            canvas.getChildren().addAll(philArr[i].getCircle(), philArr[i].getText(), philArr[i].getLeftLine(),
+                    philArr[i].getRightLine());
+            executorService.execute(philArr[i]);
+        }
 
         BorderPane root = new BorderPane();
-        Pane canvas = new Pane();
-
-        canvas.getChildren().addAll(circleTable, circleChopStick0, circleChopStick1, circleChopStick2, circleChopStick3,
-                circleChopStick4, seat0, seat1, seat2, seat3, seat4);
-        //canvas.getChildren().remove(line1);
 
         root.setCenter(canvas);
 
         primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
 
-    }
-
-    public Circle createChopStick(int circlePositionX, int circlePositionY, int circleRadius, int degree){
-        Circle temp = new Circle();
-        temp.setStroke(Color.YELLOW);
-        temp.setCenterX(circlePositionX + circleRadius * Math.cos(degree * (Math.PI / 180)));
-        temp.setCenterY(circlePositionY + circleRadius * Math.sin(degree * (Math.PI / 180)));
-        temp.setRadius(15.0f);
-        return temp;
     }
 
     public Circle createSeat(int circlePositionX, int circlePositionY, int circleRadius, int degree){
