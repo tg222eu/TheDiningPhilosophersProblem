@@ -5,12 +5,12 @@
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -38,6 +38,7 @@ public class ProgramFX extends Application {
         int circlePositionY = 300;
         int circleRadius = 120;
         Pane canvas = new Pane();
+        VBox vbox = new VBox();
 
         Circle circleTable = new Circle();
         circleTable.setCenterX(circlePositionX);
@@ -49,7 +50,7 @@ public class ProgramFX extends Application {
         for(int i=0; i<5; i++){
             chopArr[i] = new ChopStick(i, circlePositionX, circlePositionY, circleRadius, i*72);
             System.out.println(chopArr[i].getX() + " " + chopArr[i].getY());
-            canvas.getChildren().add(chopArr[i].getCircle());
+            canvas.getChildren().addAll(chopArr[i].getCircle(), chopArr[i].getText());
         }
 
         executorService = Executors.newFixedThreadPool(5);
@@ -59,23 +60,32 @@ public class ProgramFX extends Application {
                     circleRadius, i*72+36);
             canvas.getChildren().addAll(philArr[i].getCircle(), philArr[i].getText(), philArr[i].getLeftLine(),
                     philArr[i].getRightLine());
+            vbox.getChildren().addAll(philArr[i].averageMoodTime());
             executorService.execute(philArr[i]);
         }
 
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPadding(new Insets(10, 10, 10, 10));
+        Button stopButton = new Button("Stop");
+        stopButton.setPadding(new Insets(10, 10, 10, 10));
+
+        stopButton.setOnAction(Event -> {
+            for (Philosopher p : philArr) {
+                p.havingADinnerParty = false;
+            }
+        });
+
+        hbox.getChildren().addAll(stopButton);
+
         BorderPane root = new BorderPane();
 
+        root.setRight(vbox);
+        root.setTop(hbox);
         root.setCenter(canvas);
 
         primaryStage.setScene(new Scene(root, 600, 600));
         primaryStage.show();
 
-    }
-
-    public Circle createSeat(int circlePositionX, int circlePositionY, int circleRadius, int degree){
-        Circle temp = new Circle();
-        temp.setCenterX(circlePositionX + circleRadius * Math.cos(degree * (Math.PI / 180)));
-        temp.setCenterY(circlePositionY + circleRadius * Math.sin(degree * (Math.PI / 180)));
-        temp.setRadius(30.0f);
-        return temp;
     }
 }
