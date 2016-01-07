@@ -22,7 +22,9 @@ public class Philosopher implements Runnable{
     public int hungryCounter = 0;
     public int ateCounter = 0;
     public int thinkCounter = 0;
-    public int globalTime = 0;
+    public int hungryTime = 0;
+    public int ateTime = 0;
+    public int thinkTime = 0;
 
     public int id;
     public boolean hungry;
@@ -90,8 +92,8 @@ public class Philosopher implements Runnable{
         try {
             int time = (int) ( Math.random()* 30 * 1000);
             Thread.sleep(time);
-            thinkCounter += time/1000;
-            globalTime += time/1000;
+            thinkCounter++;
+            thinkTime += time/1000;
             updateAverageTimeText();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -113,10 +115,10 @@ public class Philosopher implements Runnable{
         rightLine.setEndY(y);
 
         try {
-            int time = (int) ( Math.random() * 30* 1000);
+            int time = (int) ( Math.random() * 30 * 1000);
             Thread.sleep(time);
-            ateCounter += time/1000;
-            globalTime += time/1000;
+            ateCounter++;
+            ateTime += time/1000;
             updateAverageTimeText();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -139,6 +141,7 @@ public class Philosopher implements Runnable{
 
     public void hungry(){
         hungry = true;
+        hungryCounter++;
         System.out.println("Philosopher_" + id + " is hungry");
         text.setText(id + " HUNGRY");
 
@@ -155,8 +158,7 @@ public class Philosopher implements Runnable{
                 Thread.sleep(10);
                 countSeconds += 10;
                 if(countSeconds == 1000){
-                    hungryCounter++;
-                    updateAverageTimeText();
+                    hungryTime++;
                     countSeconds = 0;
                 }
             }
@@ -192,28 +194,23 @@ public class Philosopher implements Runnable{
         int averageHungry = 0;
 
         if(ateCounter!=0){
-            averageAte = globalTime / ateCounter;
+            averageAte = ateTime / ateCounter;
         }else{
             averageAte = 0;
         }
         if(thinkCounter != 0){
-            averageThought = globalTime / thinkCounter;
+            averageThought = thinkTime / thinkCounter;
         }else{
             averageThought = 0;
         }
         if(hungryCounter != 0){
-            averageHungry = globalTime / hungryCounter;
+            averageHungry = hungryTime / hungryCounter;
         }else{
             averageHungry = 0;
         }
 
-        if(globalTime != 0) {
             averageTimeText.setText("Philosopher" + id + " average time(ate: " + averageAte + ". Thought: " + averageThought + " Hungered: " +
                     averageHungry + ")");
-        }else{
-            averageTimeText.setText("Philosopher" + id + " average time(ate: " + 0 + ". Thought: " + 0 + " Hungered: " +
-                    0 + ")");
-        }
     }
 
     public int AteNumberOfTimes(){
