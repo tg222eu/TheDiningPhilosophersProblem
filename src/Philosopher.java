@@ -149,20 +149,23 @@ public class Philosopher implements Runnable{
 
     public void tryToEat(){
         try {
-            if(leftStick.chopStickAvailable && rightStick.chopStickAvailable)
-        if (leftStick.pickUp()) {
-            if (rightStick.pickUp()) {
-                eat();
-            } else {
-                leftStick.putDown();
+            if(leftStick.chopStickAvailable && rightStick.chopStickAvailable) {
+                if (leftStick.pickUp()) {
+                    if (rightStick.pickUp()) {
+                        eat();
+                    } else {
+                        leftStick.putDown();
+                    }
+                }
+            }else{
                 Thread.sleep(10);
                 countSeconds += 10;
                 if(countSeconds == 1000){
                     hungryTime++;
                     countSeconds = 0;
+                    updateAverageTimeText();
                 }
             }
-        }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

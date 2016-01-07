@@ -40,6 +40,8 @@ public class ProgramFX extends Application {
         Pane canvas = new Pane();
         VBox vbox = new VBox();
 
+        Button startButton = new Button("Start");
+
         Circle circleTable = new Circle();
         circleTable.setCenterX(circlePositionX);
         circleTable.setCenterY(circlePositionY);
@@ -55,20 +57,22 @@ public class ProgramFX extends Application {
 
         executorService = Executors.newFixedThreadPool(5);
 
-        for(int i=0; i<5; i++){
-            philArr[i] = new Philosopher(i, chopArr[i], chopArr[(i+1)%5], circlePositionX, circlePositionY,
-                    circleRadius, i*72+36);
-            canvas.getChildren().addAll(philArr[i].getCircle(), philArr[i].getText(), philArr[i].getLeftLine(),
-                    philArr[i].getRightLine());
-            vbox.getChildren().addAll(philArr[i].averageMoodTime());
-            executorService.execute(philArr[i]);
-        }
+        startButton.setOnAction(Event -> {
+            for(int i=0; i<5; i++){
+                philArr[i] = new Philosopher(i, chopArr[i], chopArr[(i+1)%5], circlePositionX, circlePositionY,
+                        circleRadius, i*72+36);
+                canvas.getChildren().addAll(philArr[i].getCircle(), philArr[i].getText(), philArr[i].getLeftLine(),
+                        philArr[i].getRightLine());
+                vbox.getChildren().addAll(philArr[i].averageMoodTime());
+                executorService.execute(philArr[i]);
+            }
+        });
 
         HBox hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
         hbox.setPadding(new Insets(10, 10, 10, 10));
+
         Button stopButton = new Button("Stop");
-        stopButton.setPadding(new Insets(10, 10, 10, 10));
 
         stopButton.setOnAction(Event -> {
             for (Philosopher p : philArr) {
@@ -76,7 +80,7 @@ public class ProgramFX extends Application {
             }
         });
 
-        hbox.getChildren().addAll(stopButton);
+        hbox.getChildren().addAll(startButton, stopButton);
 
         BorderPane root = new BorderPane();
 
